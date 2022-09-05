@@ -1,9 +1,18 @@
 ﻿@page "/"
+@using BlazorChat.Client.ViewModels
+@inject IProfileViewModel _profileViewModel
 
-<PageTitle>Index</PageTitle>
+<div class="col-12">
+    <input type="text" @bind-value="_profileViewModel.FirstName" class="form-control" placeholder="first name">
+    <br/>
+    <input type="text" @bind-value="_profileViewModel.LastName" class="form-control" placeholder="last name">
+    <br/>
+    <input type="text" @bind-value="_profileViewModel.EmailAddress" class="form-control" placeholder="email address">
+    <br/>
+    <button class="btn btn-primary" @onclick="_profileViewModel.UpdateProfile">Update Profile</button>
+    <span>&nbsp;&nbsp;</span>@_profileViewModel.Message
+</div>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code{
+    protected override async Task OnInitializedAsync() => await _profileViewModel.GetProfile();
+}
