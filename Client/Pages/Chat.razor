@@ -1,0 +1,10 @@
+@page "/chat"
+@page "/chat/{FirstName}"
+
+<h1>Welcome @FirstName, this is chat page</h1>
+
+@code
+{
+    [Parameter]
+    public string FirstName {get;set;} = string.Empty;
+}

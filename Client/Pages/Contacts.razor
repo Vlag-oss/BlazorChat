@@ -1,0 +1,26 @@
+﻿@page "/contacts"
+@using BlazorChat.Shared
+
+<div class="col-12">
+
+    @foreach(var contact in ContactList)
+    {
+        <a href="/chat/@contact.FirstName" class="list-group-item list-group-item-action flex-column align-items-start">
+            @contact.FirstName <span> </span> @contact.LastName
+        </a>
+    }
+
+</div>
+
+@code {
+    private List<Contact> ContactList = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ContactList.Add(new Contact(1, "Julius", "Caesar"));
+        ContactList.Add(new Contact(2, "Steven", "Spielberg"));
+        ContactList.Add(new Contact(3, "Walt", "Disney"));
+        ContactList.Add(new Contact(4, "Thomas", "Edison"));
+        ContactList.Add(new Contact(5, "J.K.", "Rowling"));
+    }
+}
