@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using BlazorChat.Shared;
+using Microsoft.EntityFrameworkCore;
 using BlazorChat.Server.Models;
 
 namespace BlazorChat.Server.Controllers;
@@ -28,4 +29,27 @@ public class UserController : ControllerBase
 
         return contacts;
     }
+
+    [HttpPut("updateprofile/{userId}")]
+    public async Task<User> UpdateProfile(int userId, [FromBody] User user)
+    {
+        var userToUpdate = await _context.Users
+                                            .Where(user => user.UserId == userId)
+                                            .FirstOrDefaultAsync() ?? new User();
+
+        userToUpdate.FirstName = user.FirstName;
+        userToUpdate.LastName = user.LastName;
+        userToUpdate.EmailAddress = user.EmailAddress;
+
+        await _context.SaveChangesAsync();
+
+        return await Task.FromResult(user);
+    }
+
+
+    [HttpGet("getprofile/{userId}")]
+    public async Task<User> GetProfile(int userId)
+        => await _context.Users
+                            .Where(user => user.UserId == userId)
+                            .FirstOrDefaultAsync() ?? new User();
 }
