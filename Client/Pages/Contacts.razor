@@ -1,5 +1,6 @@
 ﻿@page "/contacts"
 @using BlazorChat.Shared
+@inject HttpClient Http
 
 <div class="col-12">
 
@@ -17,10 +18,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        ContactList.Add(new Contact(1, "Julius", "Caesar"));
-        ContactList.Add(new Contact(2, "Steven", "Spielberg"));
-        ContactList.Add(new Contact(3, "Walt", "Disney"));
-        ContactList.Add(new Contact(4, "Thomas", "Edison"));
-        ContactList.Add(new Contact(5, "J.K.", "Rowling"));
+        ContactList = await Http.GetFromJsonAsync<List<Contact>>("user") ?? new List<Contact>();
     }
 }

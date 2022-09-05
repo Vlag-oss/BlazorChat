@@ -2,7 +2,7 @@ namespace BlazorChat.Shared;
 
 public class Contact
 {
-    public int ContactId {get;set;}
+    public long ContactId {get;set;}
     public string FirstName {get;set;}
     public string LastName {get;set;}
 
@@ -12,7 +12,7 @@ public class Contact
         LastName = string.Empty;
     }
 
-    public Contact(int contactId, string firstName, string lastName)
+    public Contact(long contactId, string firstName, string lastName)
     {
         ContactId = contactId;
         FirstName = firstName;
