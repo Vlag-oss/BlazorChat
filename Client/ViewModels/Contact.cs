@@ -1,4 +1,6 @@
-namespace BlazorChat.Shared;
+using BlazorChat.Shared.Models;
+
+namespace BlazorChat.Client.ViewModels;
 
 public class Contact
 {
@@ -18,4 +20,10 @@ public class Contact
         FirstName = firstName;
         LastName = lastName;
     }
+
+    public static implicit operator Contact(User user)
+        => new Contact(user.UserId, user.FirstName, user.LastName);
+
+    public static implicit operator User(Contact contact)
+        => new User{ UserId = contact.ContactId, FirstName = contact.FirstName, LastName = contact.LastName };
 }

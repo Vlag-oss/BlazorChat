@@ -18,6 +18,9 @@ public class UserController : ControllerBase
         _context = context;
     }
 
+    [HttpGet("getcontacts")]
+    public List<User> GetContacts() => _context.Users.ToList();
+
     [HttpPut("updateprofile/{userId}")]
     public async Task<User> UpdateProfile(int userId, [FromBody] User user)
     {
