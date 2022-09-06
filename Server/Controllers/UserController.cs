@@ -18,24 +18,10 @@ public class UserController : ControllerBase
         _context = context;
     }
 
-    [HttpGet]
-    public List<Contact> Get()
-    {
-        var users = _context.Users.ToList();
-
-        var contacts = users
-                        .Select(user => new Contact(user.UserId, user.FirstName, user.LastName))
-                        .ToList();
-
-        return contacts;
-    }
-
     [HttpPut("updateprofile/{userId}")]
     public async Task<User> UpdateProfile(int userId, [FromBody] User user)
     {
-        var userToUpdate = await _context.Users
-                                            .Where(user => user.UserId == userId)
-                                            .FirstOrDefaultAsync() ?? new User();
+        User userToUpdate = await FindUser(userId);
 
         userToUpdate.FirstName = user.FirstName;
         userToUpdate.LastName = user.LastName;
@@ -49,7 +35,28 @@ public class UserController : ControllerBase
 
     [HttpGet("getprofile/{userId}")]
     public async Task<User> GetProfile(int userId)
-        => await _context.Users
-                            .Where(user => user.UserId == userId)
-                            .FirstOrDefaultAsync() ?? new User();
+        => await FindUser(userId);
+
+    [HttpGet("updatetheme")]
+    public async Task<User> UpdateTheme(string userId, string value)
+    {
+        User user = await FindUser(Convert.ToInt32(userId));
+        user.DarkTheme = value == "True" ? 1 : 0;
+
+        await _context.SaveChangesAsync();
+        return await Task.FromResult(user);
+    }
+
+    [HttpGet("updatenotifications")]
+    public async Task<User> UpdateNotifications(string userId, string value)
+    {
+        User user = await FindUser(Convert.ToInt32(userId));
+        user.Notifications = value == "True" ? 1 : 0;
+
+        await _context.SaveChangesAsync();
+        return await Task.FromResult(user);
+    }
+
+    private async Task<User> FindUser(int userId)
+        => await _context.Users.Where(user => user.UserId == userId).FirstOrDefaultAsync() ?? throw new ArgumentNullException();
 }
