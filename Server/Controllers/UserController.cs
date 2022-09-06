@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using BlazorChat.Shared;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using BlazorChat.Server.Models;
+using BlazorChat.Shared.Models;
 
 namespace BlazorChat.Server.Controllers;
 
@@ -20,6 +22,42 @@ public class UserController : ControllerBase
 
     [HttpGet("getcontacts")]
     public List<User> GetContacts() => _context.Users.ToList();
+
+    [HttpPost("loginuser")]
+    public async Task<ActionResult<User>> LoginUser([FromBody] User user)
+    {
+        User loggedInUser = await _context.Users
+                                            .Where(u => u.EmailAddress == user.EmailAddress && u.Password == user.Password)
+                                            .FirstOrDefaultAsync() ?? throw new ArgumentNullException();
+        
+        var claim = new Claim(ClaimTypes.Name, loggedInUser.EmailAddress);
+        var claimIdentity = new ClaimsIdentity(new[]{claim}, "serverAuth");
+        var claimsPrincipal = new ClaimsPrincipal(claimIdentity);
+
+        await HttpContext.SignInAsync(claimsPrincipal);
+
+        return await Task.FromResult(loggedInUser);
+    }
+
+    [HttpGet("getcurrentuser")]
+    public async Task<ActionResult<User>> GetCurrentUser()
+    {
+        User currentUser = new User();
+
+        if(User.Identity.IsAuthenticated)
+        {
+            currentUser.EmailAddress = User.FindFirstValue(ClaimTypes.Name);
+        }
+
+        return await Task.FromResult(currentUser);
+    }
+
+    [HttpGet("logoutuser")]
+    public async Task<ActionResult<string>> LogoutUser()
+    {
+        await HttpContext.SignOutAsync();
+        return "Success";
+    }
 
     [HttpPut("updateprofile/{userId}")]
     public async Task<User> UpdateProfile(int userId, [FromBody] User user)
