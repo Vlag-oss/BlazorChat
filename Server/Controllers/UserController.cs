@@ -30,8 +30,10 @@ public class UserController : ControllerBase
                                             .Where(u => u.EmailAddress == user.EmailAddress && u.Password == user.Password)
                                             .FirstOrDefaultAsync() ?? throw new ArgumentNullException();
         
-        var claim = new Claim(ClaimTypes.Name, loggedInUser.EmailAddress);
-        var claimIdentity = new ClaimsIdentity(new[]{claim}, "serverAuth");
+        var claimEmailAddress = new Claim(ClaimTypes.Name, loggedInUser.EmailAddress);
+        var claimNameIdentifier = new Claim(ClaimTypes.NameIdentifier, Convert.ToString(loggedInUser.UserId));
+
+        var claimIdentity = new ClaimsIdentity(new[]{ claimEmailAddress, claimNameIdentifier }, "serverAuth");
         var claimsPrincipal = new ClaimsPrincipal(claimIdentity);
 
         await HttpContext.SignInAsync(claimsPrincipal);
@@ -44,9 +46,10 @@ public class UserController : ControllerBase
     {
         User currentUser = new User();
 
-        if(User.Identity.IsAuthenticated)
+        if(User.Identity is { IsAuthenticated: true })
         {
             currentUser.EmailAddress = User.FindFirstValue(ClaimTypes.Name);
+            currentUser.UserId = Convert.ToInt64(User.FindFirstValue(ClaimTypes.NameIdentifier));
         }
 
         return await Task.FromResult(currentUser);

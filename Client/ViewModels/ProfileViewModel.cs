@@ -12,7 +12,7 @@ public class ProfileViewModel : IProfileViewModel
     public string? AboutMe { get; set; }
     public string? Message { get; set; }
 
-    private HttpClient _httpClient;
+    private readonly HttpClient _httpClient;
 
     public ProfileViewModel()
     {
@@ -27,15 +27,15 @@ public class ProfileViewModel : IProfileViewModel
     public async Task UpdateProfile()
     {
         User user = this;
-        await _httpClient.PutAsJsonAsync<User>("user/updateprofile/1", user);
-        this.Message = "Profile updated successfully";
+        await _httpClient.PutAsJsonAsync<User>($"user/updateprofile/{UserId}", user);
+        Message = "Profile updated successfully";
     }
 
     public async Task GetProfile()
     {
-        User user = await _httpClient.GetFromJsonAsync<User>("user/getprofile/1") ?? new User();
+        var user = await _httpClient.GetFromJsonAsync<User>($"user/getprofile/{UserId}") ?? new User();
         LoadCurrentObject(user);
-        this.Message = "Profile loaded successfully";
+        Message = "Profile loaded successfully";
     }
 
     private void LoadCurrentObject(ProfileViewModel profileViewModel)
@@ -43,6 +43,7 @@ public class ProfileViewModel : IProfileViewModel
         this.FirstName = profileViewModel.FirstName;
         this.LastName = profileViewModel.LastName;
         this.EmailAddress = profileViewModel.EmailAddress;
+        this.AboutMe = profileViewModel.AboutMe;
     }
 
     public static implicit operator ProfileViewModel(User user)
@@ -52,7 +53,8 @@ public class ProfileViewModel : IProfileViewModel
             UserId = user.UserId,
             FirstName = user.FirstName,
             LastName = user.LastName,
-            EmailAddress = user.EmailAddress
+            EmailAddress = user.EmailAddress,
+            AboutMe = user.AboutMe,
         };
     }
 
@@ -63,7 +65,8 @@ public class ProfileViewModel : IProfileViewModel
             UserId = profileViewModel.UserId,
             FirstName = profileViewModel.FirstName,
             LastName = profileViewModel.LastName,
-            EmailAddress = profileViewModel.EmailAddress
+            EmailAddress = profileViewModel.EmailAddress,
+            AboutMe = profileViewModel.AboutMe
         };
     }
 }
