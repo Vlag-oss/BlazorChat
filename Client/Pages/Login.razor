@@ -17,11 +17,21 @@
 <div class="col-6">
     <button class="btn btn-primary" @onclick="LoginUser">Login</button>
 </div>
+<div class="col-6">
+    <a class="btn btn-block btn-social btn-google" @onclick="GoogleSignIn">
+        <i class="fa fa-google"></i> <b>Sign in with Google</b>
+    </a>
+</div>
 
 @code{
     public async Task LoginUser()
     {
         await LoginViewModel.LoginUser();
         NavigationManager.NavigateTo("/profile", true);
+    }
+
+    private void GoogleSignIn()
+    {
+        NavigationManager.NavigateTo("user/GoogleSignIn", true);
     }
 }

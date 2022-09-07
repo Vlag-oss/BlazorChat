@@ -11,7 +11,12 @@ builder.Services.AddEntityFrameworkSqlite().AddDbContext<BlazorChatContext>();
 
 builder.Services.AddAuthentication(options => {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-}).AddCookie();
+})
+.AddCookie()
+.AddGoogle(googleOptions => {
+    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+});
 
 var app = builder.Build();
 

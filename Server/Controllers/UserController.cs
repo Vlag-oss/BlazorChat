@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using BlazorChat.Server.Models;
 using BlazorChat.Shared.Models;
+using Microsoft.AspNetCore.Authentication.Google;
 
 namespace BlazorChat.Server.Controllers;
 
@@ -26,30 +27,46 @@ public class UserController : ControllerBase
     [HttpPost("loginuser")]
     public async Task<ActionResult<User>> LoginUser([FromBody] User user)
     {
-        User loggedInUser = await _context.Users
+        user.Password = Utility.Encrypt(user.Password!);
+        var loggedInUser = await _context.Users
                                             .Where(u => u.EmailAddress == user.EmailAddress && u.Password == user.Password)
-                                            .FirstOrDefaultAsync() ?? throw new ArgumentNullException();
-        
-        var claimEmailAddress = new Claim(ClaimTypes.Name, loggedInUser.EmailAddress);
-        var claimNameIdentifier = new Claim(ClaimTypes.NameIdentifier, Convert.ToString(loggedInUser.UserId));
+                                            .FirstOrDefaultAsync();
 
-        var claimIdentity = new ClaimsIdentity(new[]{ claimEmailAddress, claimNameIdentifier }, "serverAuth");
-        var claimsPrincipal = new ClaimsPrincipal(claimIdentity);
+        if (loggedInUser is not null)
+        {
+            var claim = new Claim(ClaimTypes.Email, loggedInUser.EmailAddress!);
 
-        await HttpContext.SignInAsync(claimsPrincipal);
+            var claimIdentity = new ClaimsIdentity(new[]{ claim }, "serverAuth");
+            var claimsPrincipal = new ClaimsPrincipal(claimIdentity);
 
-        return await Task.FromResult(loggedInUser);
+            await HttpContext.SignInAsync(claimsPrincipal);
+        }
+
+        return await Task.FromResult(loggedInUser) ?? throw new InvalidOperationException();
     }
 
     [HttpGet("getcurrentuser")]
     public async Task<ActionResult<User>> GetCurrentUser()
     {
-        User currentUser = new User();
+        var currentUser = new User();
 
         if(User.Identity is { IsAuthenticated: true })
         {
-            currentUser.EmailAddress = User.FindFirstValue(ClaimTypes.Name);
-            currentUser.UserId = Convert.ToInt64(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            currentUser = await _context.Users.Where(u => u.EmailAddress == User.FindFirstValue(ClaimTypes.Email)).FirstOrDefaultAsync();
+
+            if(currentUser is null)
+            {
+                currentUser = new User
+                {
+                    UserId = _context.Users.Max(user => user.UserId) + 1,
+                    EmailAddress = User.FindFirstValue(ClaimTypes.Email),
+                    Password = Utility.Encrypt(currentUser!.EmailAddress!),
+                    Source = "EXTL"
+                };
+
+                _context.Users.Add(currentUser);
+                await _context.SaveChangesAsync();
+            }
         }
 
         return await Task.FromResult(currentUser);
@@ -70,12 +87,12 @@ public class UserController : ControllerBase
         userToUpdate.FirstName = user.FirstName;
         userToUpdate.LastName = user.LastName;
         userToUpdate.EmailAddress = user.EmailAddress;
+        userToUpdate.AboutMe = user.AboutMe;
 
         await _context.SaveChangesAsync();
 
         return await Task.FromResult(user);
     }
-
 
     [HttpGet("getprofile/{userId}")]
     public async Task<User> GetProfile(int userId)
@@ -99,6 +116,12 @@ public class UserController : ControllerBase
 
         await _context.SaveChangesAsync();
         return await Task.FromResult(user);
+    }
+
+    [HttpGet("GoogleSignIn")]
+    public async Task GoogleSignIn()
+    {
+        await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme, new AuthenticationProperties { RedirectUri = "/profile" });
     }
 
     private async Task<User> FindUser(int userId)
