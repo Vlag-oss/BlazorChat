@@ -14,4 +14,5 @@ public partial class User
     public long? Notifications { get; set; }
     public long? DarkTheme { get; set; }
     public byte[]? CreatedDate { get; set; }
+    public string? ProfilePicDataUrl { get; set; }
 }

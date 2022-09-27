@@ -4,23 +4,46 @@
 @inject IProfileViewModel ProfileViewModel
 @inject NavigationManager NavigationManager
 
-<div class="col-12">
-    <input type="text" @bind-value="ProfileViewModel.FirstName" class="form-control" placeholder="first name">
-    <br/>
-    <input type="text" @bind-value="ProfileViewModel.LastName" class="form-control" placeholder="last name">
-    <br/>
-    <input type="text" @bind-value="ProfileViewModel.EmailAddress" class="form-control" placeholder="email address">
-    <br/>
-    <textarea class="form-control" @bind="ProfileViewModel.AboutMe" placeholder="about me" />
-    <br/>
-    <button class="btn btn-primary" @onclick="ProfileViewModel.UpdateProfile">Update Profile</button>
-    <span>&nbsp;&nbsp;</span>@ProfileViewModel.Message
+<PageTitle>Profile</PageTitle>
+
+<h2><b>Profile</b></h2>
+<hr />
+
+<div class="row col-12">
+    
+    <div class="col-4">
+        <img src="@ProfileViewModel.ProfilePicDataUrl" style="width: 250px; height: 250px;" alt=""/> <br/> <br/>
+        <InputFile OnChange="@OnInputFileChanged"></InputFile>
+    </div>
+
+    <div class="col-8">
+        <input type="text" @bind-value="ProfileViewModel.FirstName" class="form-control" placeholder="first name">
+        <br/>
+        <input type="text" @bind-value="ProfileViewModel.LastName" class="form-control" placeholder="last name">
+        <br/>
+        <input type="text" @bind-value="ProfileViewModel.EmailAddress" class="form-control" placeholder="email address">
+        <br/>
+        <textarea class="form-control" @bind="ProfileViewModel.AboutMe" placeholder="about me" />
+        <br/>
+        <button class="btn btn-primary" @onclick="ProfileViewModel.UpdateProfile">Update Profile</button>
+        <span>&nbsp;&nbsp;</span>@ProfileViewModel.Message
+    </div>
 </div>
 
 @code{
 
     [CascadingParameter]
     public Task<AuthenticationState> authenticationState { get; set; }
+
+    private async Task OnInputFileChanged(InputFileChangeEventArgs inputFileChangeEvent)
+    {
+        var file = inputFileChangeEvent.File;
+
+        var buffer = new byte[file.Size];
+        await file.OpenReadStream().ReadAsync(buffer);
+
+        ProfileViewModel.ProfilePicDataUrl = $"data:image/png;base64,{Convert.ToBase64String(buffer)}";
+    }
 
     protected override async Task OnInitializedAsync()
     {
