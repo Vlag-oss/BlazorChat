@@ -11,6 +11,7 @@ public class ProfileViewModel : IProfileViewModel
     public string EmailAddress { get; set; } = string.Empty;
     public string? AboutMe { get; set; }
     public string? Message { get; set; }
+    public string? ProfilePicDataUrl { get; set; }
 
     private readonly HttpClient _httpClient;
 
@@ -44,6 +45,7 @@ public class ProfileViewModel : IProfileViewModel
         this.LastName = profileViewModel.LastName;
         this.EmailAddress = profileViewModel.EmailAddress;
         this.AboutMe = profileViewModel.AboutMe;
+        this.ProfilePicDataUrl = profileViewModel.ProfilePicDataUrl;
     }
 
     public static implicit operator ProfileViewModel(User user)
@@ -54,7 +56,8 @@ public class ProfileViewModel : IProfileViewModel
             FirstName = user.FirstName,
             LastName = user.LastName,
             EmailAddress = user.EmailAddress,
-            AboutMe = user.AboutMe
+            AboutMe = user.AboutMe,
+            ProfilePicDataUrl = user.ProfilePicDataUrl,
         };
     }
 
@@ -66,7 +69,8 @@ public class ProfileViewModel : IProfileViewModel
             FirstName = profileViewModel.FirstName,
             LastName = profileViewModel.LastName,
             EmailAddress = profileViewModel.EmailAddress,
-            AboutMe = profileViewModel.AboutMe
+            AboutMe = profileViewModel.AboutMe,
+            ProfilePicDataUrl = profileViewModel.ProfilePicDataUrl
         };
     }
 }

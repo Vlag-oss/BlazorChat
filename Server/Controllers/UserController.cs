@@ -82,12 +82,13 @@ public class UserController : ControllerBase
     [HttpPut("updateprofile/{userId}")]
     public async Task<User> UpdateProfile(int userId, [FromBody] User user)
     {
-        User userToUpdate = await FindUser(userId);
+        var userToUpdate = await FindUser(userId);
 
         userToUpdate.FirstName = user.FirstName;
         userToUpdate.LastName = user.LastName;
         userToUpdate.EmailAddress = user.EmailAddress;
         userToUpdate.AboutMe = user.AboutMe;
+        userToUpdate.ProfilePicDataUrl = user.ProfilePicDataUrl;
 
         await _context.SaveChangesAsync();
 

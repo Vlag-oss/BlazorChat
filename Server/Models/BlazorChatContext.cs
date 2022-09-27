@@ -20,7 +20,7 @@ namespace BlazorChat.Server.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlite("Name=BlazorChat");
+                optionsBuilder.UseSqlite("Name=ConnectionStrings:BlazorChat");
             }
         }
 
@@ -53,6 +53,8 @@ namespace BlazorChat.Server.Models
                 entity.Property(e => e.Notifications).HasColumnName("notifications");
 
                 entity.Property(e => e.Password).HasColumnName("password");
+
+                entity.Property(e => e.ProfilePicDataUrl).HasColumnName("profile_pic_data_url");
 
                 entity.Property(e => e.ProfilePictureUrl).HasColumnName("profile_picture_url");
 

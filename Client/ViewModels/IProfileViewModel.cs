@@ -8,7 +8,8 @@ public interface IProfileViewModel
     public string EmailAddress { get; set; }
     public string? AboutMe { get; set; }
     public string? Message { get; set; }
-    
+    public string? ProfilePicDataUrl { get; set; }
+
     public Task UpdateProfile();
     public Task GetProfile();
 }
