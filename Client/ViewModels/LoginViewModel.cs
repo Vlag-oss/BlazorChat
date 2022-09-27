@@ -20,11 +20,9 @@ public class LoginViewModel : ILoginViewModel
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
     }
 
-    public async Task<string> LoginUser()
+    public async Task LoginUser()
     {
-        User user = this;
-        var result = await _httpClient.PostAsJsonAsync("user/loginuser", user);
-        return "Success";
+        await _httpClient.PostAsJsonAsync("user/loginuser", this);
     }
 
     public static implicit operator LoginViewModel(User user)

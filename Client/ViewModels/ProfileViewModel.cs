@@ -54,7 +54,7 @@ public class ProfileViewModel : IProfileViewModel
             FirstName = user.FirstName,
             LastName = user.LastName,
             EmailAddress = user.EmailAddress,
-            AboutMe = user.AboutMe,
+            AboutMe = user.AboutMe
         };
     }
 
