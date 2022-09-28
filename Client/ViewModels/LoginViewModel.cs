@@ -8,7 +8,7 @@ public class LoginViewModel : ILoginViewModel
     public string EmailAddress { get; set; }
     public string Password { get; set; }
 
-    private HttpClient _httpClient;
+    private readonly HttpClient _httpClient;
 
     public LoginViewModel()
     {

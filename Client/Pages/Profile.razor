@@ -3,6 +3,7 @@
 @using System.Security.Claims
 @inject IProfileViewModel ProfileViewModel
 @inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
 
 <PageTitle>Profile</PageTitle>
 
@@ -54,7 +55,19 @@
         {
             var claim = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier);
             ProfileViewModel.UserId = Convert.ToInt64(claim?.Value);
-            await ProfileViewModel.GetProfile();
+            try
+            {
+                await ProfileViewModel.GetProfile();
+            }
+            catch (HttpRequestException ex)
+            {
+                if (ex.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    await HttpClient.GetAsync("user/logoutuser");
+                    NavigationManager.NavigateTo("/", true);
+                }
+            }
+            
         }
         else
         {

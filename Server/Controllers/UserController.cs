@@ -36,8 +36,8 @@ public class UserController : ControllerBase
 
             var claimIdentity = new ClaimsIdentity(new[]{ claimEmail, claimNameIdentifier }, "serverAuth");
             var claimsPrincipal = new ClaimsPrincipal(claimIdentity);
-
-            await HttpContext.SignInAsync(claimsPrincipal);
+            
+            await HttpContext.SignInAsync(claimsPrincipal, GetAuthenticationProperties());
         }
 
         return await Task.FromResult(loggedInUser) ?? throw new InvalidOperationException();
@@ -76,61 +76,26 @@ public class UserController : ControllerBase
         await HttpContext.SignOutAsync();
         return "Success";
     }
-
-    [HttpPut("updateprofile/{userId}")]
-    public async Task<User> UpdateProfile(int userId, [FromBody] User user)
-    {
-        var userToUpdate = await FindUser(userId);
-
-        userToUpdate.FirstName = user.FirstName;
-        userToUpdate.LastName = user.LastName;
-        userToUpdate.EmailAddress = user.EmailAddress;
-        userToUpdate.AboutMe = user.AboutMe;
-        userToUpdate.ProfilePicDataUrl = user.ProfilePicDataUrl;
-
-        await _context.SaveChangesAsync();
-
-        return await Task.FromResult(user);
-    }
-
-    [HttpGet("getprofile/{userId}")]
-    public async Task<User> GetProfile(int userId)
-        => await FindUser(userId);
-
-    [HttpGet("updatetheme")]
-    public async Task<User> UpdateTheme(string userId, string value)
-    {
-        User user = await FindUser(Convert.ToInt32(userId));
-        user.DarkTheme = value == "True" ? 1 : 0;
-
-        await _context.SaveChangesAsync();
-        return await Task.FromResult(user);
-    }
-
-    [HttpGet("updatenotifications")]
-    public async Task<User> UpdateNotifications(string userId, string value)
-    {
-        User user = await FindUser(Convert.ToInt32(userId));
-        user.Notifications = value == "True" ? 1 : 0;
-
-        await _context.SaveChangesAsync();
-        return await Task.FromResult(user);
-    }
-
+    
     [HttpGet("GoogleSignIn")]
     public async Task GoogleSignIn()
     {
-        await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme, new AuthenticationProperties { RedirectUri = "/profile" });
+        await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme, GetAuthenticationProperties());
     }
 
-    [HttpGet("getvisiblecontacts")]
-    public async Task<List<User>> GetVisibleContacts(int startIndex, int count)
-        => await _context.Users.Skip(startIndex).Take(count).ToListAsync();
+    private static AuthenticationProperties GetAuthenticationProperties()
+    {
+        return new AuthenticationProperties
+        {
+            IsPersistent = true,
+            ExpiresUtc = DateTime.Now.AddSeconds(5),
+            RedirectUri = "/profile"
+        };
+    }
 
-    [HttpGet("getcontactscount")]
-    public async Task<int> GetContactsCount()
-        => await _context.Users.CountAsync();
-
-    private async Task<User> FindUser(int userId)
-        => await _context.Users.Where(user => user.UserId == userId).FirstOrDefaultAsync() ?? throw new ArgumentNullException();
+    [HttpGet("notauthorized")]
+    public IActionResult NotAuthorized()
+    {
+        return Unauthorized();
+    }
 }

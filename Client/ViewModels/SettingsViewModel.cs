@@ -8,7 +8,7 @@ public class SettingsViewModel : ISettingsViewModel
     public bool Notifications { get; set; }
     public bool DarkTheme { get; set; }
 
-    private HttpClient _httpClient;
+    private readonly HttpClient _httpClient;
 
     public SettingsViewModel()
     {
@@ -22,14 +22,14 @@ public class SettingsViewModel : ISettingsViewModel
 
     public async Task GetProfile()
     {
-        User user = await _httpClient.GetFromJsonAsync<User>("user/getprofile/1") ?? new User();
+        var user = await _httpClient.GetFromJsonAsync<User>("profile/getprofile/1") ?? new User();
         LoadCurrentObject(user);
     }
 
     public async Task Save()
     {
-        await _httpClient.GetFromJsonAsync<User>($"user/updatetheme?userId={1}&value={this.DarkTheme.ToString()}");
-        await _httpClient.GetFromJsonAsync<User>($"user/updatenotifications?userId={1}&value={this.Notifications.ToString()}");
+        await _httpClient.GetFromJsonAsync<User>($"settings/updatetheme?userId={1}&value={this.DarkTheme}");
+        await _httpClient.GetFromJsonAsync<User>($"settings/updatenotifications?userId={1}&value={this.Notifications}");
     }
 
     private void LoadCurrentObject(SettingsViewModel settingsViewModel)
@@ -42,8 +42,8 @@ public class SettingsViewModel : ISettingsViewModel
     {
         return new SettingsViewModel
         {
-            Notifications = user.Notifications is null or 0 ? false : true,
-            DarkTheme = user.DarkTheme is null or 0 ? false : true
+            Notifications = user.Notifications is not (null or 0),
+            DarkTheme = user.DarkTheme is not (null or 0)
         };
     }
 
