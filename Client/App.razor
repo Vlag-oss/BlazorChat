@@ -1,5 +1,10 @@
-﻿<CascadingAuthenticationState>
-    <Router AppAssembly="@typeof(App).Assembly">
+﻿@using System.Reflection
+@inject Microsoft.AspNetCore.Components.WebAssembly.Services.LazyAssemblyLoader AssemblyLoader
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly"
+            AdditionalAssemblies="_lazyLoadedAssemblies"
+            OnNavigateAsync="OnNavigation">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
         </Found>
@@ -11,3 +16,17 @@
         </NotFound>
     </Router>
 </CascadingAuthenticationState>
+
+@code
+{
+    private readonly List<Assembly> _lazyLoadedAssemblies = new();
+
+    private async Task OnNavigation(NavigationContext context)
+    {
+        if (context.Path == "settings")
+        {
+            var assemblies = await AssemblyLoader.LoadAssembliesAsync(new[] { "Radzen.Blazor.dll" });
+            _lazyLoadedAssemblies.AddRange(assemblies);
+        }
+    }
+}

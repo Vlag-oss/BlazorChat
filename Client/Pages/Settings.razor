@@ -1,24 +1,24 @@
 ﻿@page "/settings"
 @using BlazorChat.Client.ViewModels
-@inject ISettingsViewModel _settingsViewModel
+@inject ISettingsViewModel SettingsViewModel
 
 <h2><b>Settings</b></h2>
 <hr/>
 
 <div class="col-12">
-    <input type="checkbox" @bind="_settingsViewModel.Notifications" id="chkNotification">
-    <label> Notification </label>
-    <br>
-
-    <input type="checkbox" @bind="_settingsViewModel.DarkTheme" id="chkDarkTheme">
-    <label> Dark Theme </label>
-    <br>
-</div>
-
-<div class="col-12">
-    <button class="btn btn-primary" @onclick="_settingsViewModel.Save">Save</button>
+    <div class="row">
+        <RadzenSwitch @bind-value="@SettingsViewModel.Notifications" Style="margin-bottom: 20px;"/>
+        <label class="col-3"> Notification </label>
+    </div>
+    <div class="row">
+        <RadzenSwitch @bind-value="@SettingsViewModel.DarkTheme" Style="margin-bottom: 20px;" />
+        <label class="col-3"> Dark Theme </label>
+    </div>
+    <div class="row">
+        <button class="btn btn-primary col-1" @onclick="SettingsViewModel.Save">Save</button>
+    </div>
 </div>
 
 @code{
-    protected override async Task OnInitializedAsync() => await _settingsViewModel.GetProfile();
+    protected override async Task OnInitializedAsync() => await SettingsViewModel.GetProfile();
 }

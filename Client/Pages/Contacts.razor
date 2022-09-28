@@ -12,7 +12,7 @@
 
     @if(ContactsCount > 0)
     {
-        <Virtualize ItemsProvider="LoadOnlyVisibleContacts" Context="_">
+        <Virtualize ItemsProvider="LoadOnlyVisibleContacts" Context="contact">
             <ItemContent>
                 <div style="height: 50px;">
                     <a href="/chat/@contact.ContactId" class="list-group-item list-group-item-action flex-column align-items-start bold-text">
