@@ -1,12 +1,19 @@
+using BlazorChat.Server.Hubs;
 using BlazorChat.Server.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddSignalR();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddResponseCompression(opts =>
+{
+    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" });
+});
+
 builder.Services.AddEntityFrameworkSqlite().AddDbContext<BlazorChatContext>();
 
 builder.Services.AddAuthentication(options => {
@@ -20,6 +27,7 @@ builder.Services.AddAuthentication(options => {
 
 var app = builder.Build();
 
+app.UseResponseCompression();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -42,6 +50,7 @@ app.UseAuthentication();
 
 app.MapRazorPages();
 app.MapControllers();
+app.MapHub<ChatHub>("/chatHub");
 app.MapFallbackToFile("index.html");
 
 app.Run();
