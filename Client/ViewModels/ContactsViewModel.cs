@@ -20,12 +20,12 @@ public class ContactsViewModel : IContactsViewModel
 
     public async Task<List<Contact>> GetVisibleContacts(int startIndex, int count)
     {
-        var users = await _httpClient.GetFromJsonAsync<List<User>>($"user/getvisiblecontacts?startIndex={startIndex}&count={count}") ?? new List<User>();
+        var users = await _httpClient.GetFromJsonAsync<List<User>>($"contacts/getvisiblecontacts?startIndex={startIndex}&count={count}") ?? new List<User>();
         LoadCurrentObject(users);
         return Contacts;
     }
 
-    public async Task<int> GetContactsCount() => await _httpClient.GetFromJsonAsync<int>("user/getcontactscount");
+    public async Task<int> GetContactsCount() => await _httpClient.GetFromJsonAsync<int>("contacts/getcontactscount");
 
     private void LoadCurrentObject(List<User> users)
     {

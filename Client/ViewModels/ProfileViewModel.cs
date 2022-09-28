@@ -28,13 +28,13 @@ public class ProfileViewModel : IProfileViewModel
     public async Task UpdateProfile()
     {
         User user = this;
-        await _httpClient.PutAsJsonAsync<User>($"user/updateprofile/{UserId}", user);
+        await _httpClient.PutAsJsonAsync<User>($"profile/updateprofile/{UserId}", user);
         Message = "Profile updated successfully";
     }
 
     public async Task GetProfile()
     {
-        var user = await _httpClient.GetFromJsonAsync<User>($"user/getprofile/{UserId}") ?? new User();
+        var user = await _httpClient.GetFromJsonAsync<User>($"profile/getprofile/{UserId}") ?? new User();
         LoadCurrentObject(user);
         Message = "Profile loaded successfully";
     }
