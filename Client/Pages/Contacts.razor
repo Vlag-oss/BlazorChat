@@ -1,6 +1,7 @@
 ﻿@page "/contacts"
 @using BlazorChat.Client.ViewModels
-@inject IContactsViewModel _contactsViewModel
+@inject IContactsViewModel ContactsViewModel
+@inject NavigationManager NavigationManager
 
 <div class="col-12">
     <div class="col-12 row">
@@ -9,18 +10,44 @@
     </div>
     <br/>
 
-    @if(_contactsViewModel.Contacts != null && _contactsViewModel.Contacts.Any())
+    @if(ContactsCount > 0)
     {
-        @foreach(var contact in _contactsViewModel.Contacts)
-        {
-            <a href="/chat/@contact.ContactId" class="list-group-item list-group-item-action flex-column align-items-start bold-text">
-                @contact.FirstName <span> </span> @contact.LastName
-            </a>
-        }
+        <Virtualize ItemsProvider="LoadOnlyVisibleContacts" Context="_">
+            <ItemContent>
+                <div style="height: 50px;">
+                    <a href="/chat/@contact.ContactId" class="list-group-item list-group-item-action flex-column align-items-start bold-text">
+                        @contact.FirstName <span> </span> @contact.LastName
+                    </a>
+                </div>
+            </ItemContent>
+            <Placeholder>
+                <div style="height: 50px;">
+                    <p>Loading...</p>
+                </div>
+            </Placeholder>
+        </Virtualize>
     }
 </div>
 
 @code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; }
+    public int ContactsCount { get; set; }
 
-    protected override async Task OnInitializedAsync() => await _contactsViewModel.GetContacts();
+    public async ValueTask<ItemsProviderResult<Contact>> LoadOnlyVisibleContacts(ItemsProviderRequest itemsProviderRequest)
+    {
+        var result = await ContactsViewModel.GetVisibleContacts(itemsProviderRequest.StartIndex, itemsProviderRequest.Count);
+        return new ItemsProviderResult<Contact>(result, ContactsCount);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationState;
+        var user = authState.User;
+
+        if (user.Identity!.IsAuthenticated)
+            ContactsCount = await ContactsViewModel.GetContactsCount();
+        else
+            NavigationManager.NavigateTo("/");
+    }
 }
