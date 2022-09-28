@@ -31,9 +31,10 @@ public class UserController : ControllerBase
 
         if (loggedInUser is not null)
         {
-            var claim = new Claim(ClaimTypes.Email, loggedInUser.EmailAddress!);
+            var claimEmail = new Claim(ClaimTypes.Email, loggedInUser.EmailAddress!);
+            var claimNameIdentifier = new Claim(ClaimTypes.NameIdentifier, loggedInUser.UserId.ToString());
 
-            var claimIdentity = new ClaimsIdentity(new[]{ claim }, "serverAuth");
+            var claimIdentity = new ClaimsIdentity(new[]{ claimEmail, claimNameIdentifier }, "serverAuth");
             var claimsPrincipal = new ClaimsPrincipal(claimIdentity);
 
             await HttpContext.SignInAsync(claimsPrincipal);

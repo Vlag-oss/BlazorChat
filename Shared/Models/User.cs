@@ -1,6 +1,6 @@
 ﻿namespace BlazorChat.Shared.Models;
 
-public partial class User
+public class User
 {
     public long UserId { get; set; }
     public string? EmailAddress { get; set; }
