@@ -1,5 +1,4 @@
 using System.Net.Http.Json;
-using BlazorChat.Shared;
 using BlazorChat.Shared.Models;
 
 namespace BlazorChat.Client.ViewModels;
@@ -7,8 +6,7 @@ namespace BlazorChat.Client.ViewModels;
 public class ContactsViewModel : IContactsViewModel
 {
     public List<Contact> Contacts { get; set; }
-
-    private HttpClient _httpClient;
+    private readonly HttpClient _httpClient;
 
     public ContactsViewModel()
     {
@@ -19,12 +17,15 @@ public class ContactsViewModel : IContactsViewModel
     {
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
     }
-    
-    public async Task GetContacts()
+
+    public async Task<List<Contact>> GetVisibleContacts(int startIndex, int count)
     {
-        List<User> users = await _httpClient.GetFromJsonAsync<List<User>>("user/getcontacts") ?? throw new ArgumentNullException();
+        var users = await _httpClient.GetFromJsonAsync<List<User>>($"user/getvisiblecontacts?startIndex={startIndex}&count={count}") ?? new List<User>();
         LoadCurrentObject(users);
+        return Contacts;
     }
+
+    public async Task<int> GetContactsCount() => await _httpClient.GetFromJsonAsync<int>("user/getcontactscount");
 
     private void LoadCurrentObject(List<User> users)
     {

@@ -21,9 +21,6 @@ public class UserController : ControllerBase
         _context = context;
     }
 
-    [HttpGet("getcontacts")]
-    public List<User> GetContacts() => _context.Users.ToList();
-
     [HttpPost("loginuser")]
     public async Task<ActionResult<User>> LoginUser([FromBody] User user)
     {
@@ -124,6 +121,14 @@ public class UserController : ControllerBase
     {
         await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme, new AuthenticationProperties { RedirectUri = "/profile" });
     }
+
+    [HttpGet("getvisiblecontacts")]
+    public async Task<List<User>> GetVisibleContacts(int startIndex, int count)
+        => await _context.Users.Skip(startIndex).Take(count).ToListAsync();
+
+    [HttpGet("getcontactscount")]
+    public async Task<int> GetContactsCount()
+        => await _context.Users.CountAsync();
 
     private async Task<User> FindUser(int userId)
         => await _context.Users.Where(user => user.UserId == userId).FirstOrDefaultAsync() ?? throw new ArgumentNullException();
