@@ -5,6 +5,7 @@ namespace BlazorChat.Client.ViewModels;
 
 public class SettingsViewModel : ISettingsViewModel
 {
+    public long UserId { get; set; }
     public bool Notifications { get; set; }
     public bool DarkTheme { get; set; }
 
@@ -22,14 +23,15 @@ public class SettingsViewModel : ISettingsViewModel
 
     public async Task GetProfile()
     {
-        var user = await _httpClient.GetFromJsonAsync<User>("profile/getprofile/1") ?? new User();
+        var user = await _httpClient.GetFromJsonAsync<User>($"profile/getprofile/{this.UserId}") ?? new User();
         LoadCurrentObject(user);
     }
 
     public async Task Save()
     {
-        await _httpClient.GetFromJsonAsync<User>($"settings/updatetheme?userId={1}&value={this.DarkTheme}");
-        await _httpClient.GetFromJsonAsync<User>($"settings/updatenotifications?userId={1}&value={this.Notifications}");
+        var user = this;
+        await _httpClient.PutAsJsonAsync<User>($"settings/updatetheme/{this.UserId}", user);
+        await _httpClient.PutAsJsonAsync<User>($"settings/updatenotifications/{this.UserId}", user);
     }
 
     private void LoadCurrentObject(SettingsViewModel settingsViewModel)

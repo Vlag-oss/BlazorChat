@@ -20,21 +20,21 @@ public class SettingsController : ControllerBase
         this._context = context;
     }
 
-    [HttpGet("updatetheme")]
-    public async Task<User> UpdateTheme(string userId, string value)
+    [HttpPut("updatetheme/{userId}")]
+    public async Task<User> UpdateTheme(string userId, User user)
     {
-        var user = await FindUser(Convert.ToInt32(userId));
-        user.DarkTheme = value == "True" ? 1 : 0;
+        var userToUpdate = await FindUser(Convert.ToInt32(userId));
+        userToUpdate.DarkTheme = user.DarkTheme;
 
         await _context.SaveChangesAsync();
         return await Task.FromResult(user);
     }
 
-    [HttpGet("updatenotifications")]
-    public async Task<User> UpdateNotifications(string userId, string value)
+    [HttpPut("updatenotifications/{userId}")]
+    public async Task<User> UpdateNotifications(string userId, User user)
     {
-        var user = await FindUser(Convert.ToInt32(userId));
-        user.Notifications = value == "True" ? 1 : 0;
+        var userToUpdate = await FindUser(Convert.ToInt32(userId));
+        userToUpdate.Notifications = user.Notifications;
 
         await _context.SaveChangesAsync();
         return await Task.FromResult(user);
