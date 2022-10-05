@@ -1,5 +1,4 @@
 using BlazorChat.Server.Models;
-using BlazorChat.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

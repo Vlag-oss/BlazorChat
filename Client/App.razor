@@ -1,21 +1,23 @@
 ﻿@using System.Reflection
 @inject Microsoft.AspNetCore.Components.WebAssembly.Services.LazyAssemblyLoader AssemblyLoader
 
-<CascadingAuthenticationState>
-    <Router AppAssembly="@typeof(App).Assembly"
-            AdditionalAssemblies="_lazyLoadedAssemblies"
-            OnNavigateAsync="OnNavigation">
-        <Found Context="routeData">
-            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        </Found>
-        <NotFound>
-            <PageTitle>Not found</PageTitle>
-            <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">Sorry, there's nothing at this address.</p>
-            </LayoutView>
-        </NotFound>
-    </Router>
-</CascadingAuthenticationState>
+<Error>
+    <CascadingAuthenticationState>
+        <Router AppAssembly="@typeof(App).Assembly"
+                AdditionalAssemblies="_lazyLoadedAssemblies"
+                OnNavigateAsync="OnNavigation">
+            <Found Context="routeData">
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            </Found>
+            <NotFound>
+                <PageTitle>Not found</PageTitle>
+                <LayoutView Layout="@typeof(MainLayout)">
+                    <p role="alert">Sorry, there's nothing at this address.</p>
+                </LayoutView>
+            </NotFound>
+        </Router>
+    </CascadingAuthenticationState>
+</Error>
 
 @code
 {

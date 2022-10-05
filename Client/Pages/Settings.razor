@@ -25,23 +25,32 @@
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationState { get; set; }
+    [CascadingParameter]
+    public Error Error { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthenticationState;
-        var user = authState.User;
-
-        if (user.Identity.IsAuthenticated)
+        try
         {
-            var claim = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier);
-            SettingsViewModel.UserId = Convert.ToInt64(claim?.Value);
-            await SettingsViewModel.GetProfile();
-        }
-        else
-        {
-            NavigationManager.NavigateTo("/");
-        }
+            var authState = await AuthenticationState;
+            var user = authState.User;
 
+            if (user.Identity.IsAuthenticated)
+            {
+                var claim = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier);
+                SettingsViewModel.UserId = Convert.ToInt64(claim?.Value);
+                throw new ArgumentNullException();
+                await SettingsViewModel.GetProfile();
+            }
+            else
+            {
+                NavigationManager.NavigateTo("/");
+            }
+        }
+        catch (Exception e)
+        {
+            Error.ProcessError(e);
+        }
     }
 
 }

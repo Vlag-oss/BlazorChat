@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using BlazorChat.Server.Models;
-using BlazorChat.Shared.Models;
 using Microsoft.AspNetCore.Authentication.Google;
 
 namespace BlazorChat.Server.Controllers;
@@ -22,7 +21,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("loginuser")]
-    public async Task<ActionResult<User>> LoginUser([FromBody] User user)
+    public async Task<ActionResult<User>> LoginUser(User user)
     {
         user.Password = Utility.Encrypt(user.Password!);
         var loggedInUser = await _context.Users
@@ -88,7 +87,7 @@ public class UserController : ControllerBase
         return new AuthenticationProperties
         {
             IsPersistent = true,
-            ExpiresUtc = DateTime.Now.AddSeconds(5),
+            ExpiresUtc = DateTime.Now.AddMinutes(10),
             RedirectUri = "/profile"
         };
     }
