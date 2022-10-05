@@ -1,4 +1,4 @@
-﻿namespace BlazorChat.Shared.Models
+﻿namespace BlazorChat.Server.Models
 {
     public partial class Log
     {

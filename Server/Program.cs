@@ -1,4 +1,5 @@
 using BlazorChat.Server.Hubs;
+using BlazorChat.Server.Logging;
 using BlazorChat.Server.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -28,12 +29,27 @@ builder.Services.AddAuthentication(options => {
     googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
 });
 
+builder.Services.AddLogging(logging =>
+{
+    logging.ClearProviders();
+});
+
+builder.Services.AddHttpContextAccessor();
+
 var app = builder.Build();
+
+var loggerFactory = app.Services.GetService<ILoggerFactory>();
+var serviceProvider = ((IApplicationBuilder)app).ApplicationServices.CreateScope().ServiceProvider;
+var appDbContext = serviceProvider.GetRequiredService<BlazorChatContext>();
+var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
+
+loggerFactory!.AddProvider(new ApplicationLoggerProvider(appDbContext, httpContextAccessor));
 
 app.UseResponseCompression();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.UseWebAssemblyDebugging();
 }
 else

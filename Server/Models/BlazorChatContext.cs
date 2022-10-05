@@ -1,5 +1,4 @@
-﻿using BlazorChat.Shared.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace BlazorChat.Server.Models
 {
@@ -21,7 +20,7 @@ namespace BlazorChat.Server.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlite("Name=BlazorChat");
+                optionsBuilder.UseSqlite("Name=ConnectionStrings:BlazorChat");
             }
         }
 
@@ -42,6 +41,8 @@ namespace BlazorChat.Server.Models
                 entity.Property(e => e.Source).HasColumnName("source");
 
                 entity.Property(e => e.StackTrace).HasColumnName("stack_trace");
+
+                entity.Property(e => e.UserId).HasColumnName("user_id");
             });
 
             modelBuilder.Entity<User>(entity =>

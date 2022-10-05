@@ -1,5 +1,4 @@
 using BlazorChat.Server.Models;
-using BlazorChat.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -26,5 +25,9 @@ public class ContactsController : ControllerBase
 
     [HttpGet("getcontactscount")]
     public async Task<int> GetContactsCount()
-        => await _context.Users.CountAsync();
+    {
+        throw new IndexOutOfRangeException();
+        return await _context.Users.CountAsync();
+    }
+        
 }

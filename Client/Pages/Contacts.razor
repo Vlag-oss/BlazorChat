@@ -32,6 +32,8 @@
 @code {
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationState { get; set; }
+    [CascadingParameter]
+    public Error Error { get; set; }
     public int ContactsCount { get; set; }
 
     public async ValueTask<ItemsProviderResult<Contact>> LoadOnlyVisibleContacts(ItemsProviderRequest itemsProviderRequest)
@@ -42,12 +44,19 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthenticationState;
-        var user = authState.User;
+        try
+        {
+            var authState = await AuthenticationState;
+            var user = authState.User;
 
-        if (user.Identity!.IsAuthenticated)
-            ContactsCount = await ContactsViewModel.GetContactsCount();
-        else
-            NavigationManager.NavigateTo("/");
+            if (user.Identity!.IsAuthenticated)
+                ContactsCount = await ContactsViewModel.GetContactsCount();
+            else
+                NavigationManager.NavigateTo("/");
+        }
+        catch (Exception e)
+        {
+            Error.ProcessError(e);
+        }
     }
 }
