@@ -17,7 +17,10 @@ public class DatabaseLogger : ILogger
 
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
-        var userId = _httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+        var user = _httpContextAccessor.HttpContext!.User;
+        var userId = user.Identity!.IsAuthenticated 
+            ? Convert.ToInt64(user.FindFirst(ClaimTypes.NameIdentifier)?.Value) 
+            : 0;
 
         var log = new Log
         {

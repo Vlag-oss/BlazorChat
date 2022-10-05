@@ -39,7 +39,6 @@
             {
                 var claim = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier);
                 SettingsViewModel.UserId = Convert.ToInt64(claim?.Value);
-                throw new ArgumentNullException();
                 await SettingsViewModel.GetProfile();
             }
             else
