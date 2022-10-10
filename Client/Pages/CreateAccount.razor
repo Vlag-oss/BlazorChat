@@ -1,0 +1,54 @@
+﻿@page "/createaccount"
+@using Microsoft.AspNetCore.Components
+@using BlazorChat.Client.ViewModels
+@inject IRegisterViewModel RegisterViewModel
+@inject NavigationManager NavigationManager
+
+<h2><b>Create an account</b></h2>
+<hr>
+
+<div class="row">
+    <EditForm Model="@RegisterViewModel" OnValidSubmit="@RegisterUser">
+        <DataAnnotationsValidator/>
+        <div class="col-3 mb-3">
+            <label for="emailAddress" class="form-label">Email Address <span class="required-field">*</span></label>
+            <InputText id="emailAddress" class="form-control" type="email" @bind-Value="RegisterViewModel.EmailAddress"/>
+            <ValidationMessage For="() => RegisterViewModel.EmailAddress" />
+        </div>
+        <div class="col-3 mb-3">
+            <label for="password" class="form-label">Password <span class="required-field">*</span></label>
+            <InputText id="password" class="form-control" type="password" @bind-Value="RegisterViewModel.Password"/>
+            <ValidationMessage For="() => RegisterViewModel.Password" />
+        </div>
+        <div class="col-3 mb-3">
+            <label for="firstName" class="form-label">First name <span class="required-field">*</span></label>
+            <InputText id="firstName" class="form-control" type="text" @bind-Value="RegisterViewModel.FirstName"/>
+            <ValidationMessage For="() => RegisterViewModel.FirstName" />
+        </div>
+        <div class="col-3 mb-3">
+            <label for="lastName" class="form-label">Last name <span class="required-field">*</span></label>
+            <InputText id="lastName" class="form-control" type="text" @bind-Value="RegisterViewModel.LastName"/>
+            <ValidationMessage For="() => RegisterViewModel.LastName" />
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </EditForm>
+</div>
+
+@code {
+    
+    [CascadingParameter]
+    private Error Error { get; set; }
+
+    public async Task RegisterUser()
+    {
+        try
+        {
+            await RegisterViewModel.RegisterUser();
+            NavigationManager.NavigateTo("/", true);
+        }
+        catch (Exception e)
+        {
+            Error.ProcessError(e);   
+        }
+    }
+}

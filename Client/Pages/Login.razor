@@ -5,6 +5,7 @@
 
 <h2><b>Login</b></h2>
 <hr>
+    
 
 <div class="col-6">
     <input type="text" @bind-value="LoginViewModel.EmailAddress" class="form-control" placeholder="email address">
@@ -14,10 +15,17 @@
     <input type="password" @bind="LoginViewModel.Password" class="form-control" placeholder="password">
 </div>
 <br/>
-<div class="col-6">
-    <button class="btn btn-primary" @onclick="LoginUser">Login</button>
+
+<div class="col-xl-6 col-md-8 col-12 row">
+    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-3 col-3">
+        <button class="btn btn-primary" @onclick="LoginUser">Login</button>
+    </div>
+    <div class="col-xl-5 col-lg-5 col-md-6 col-sm-9 col-9">
+        <a class="btn-link" @onclick="CreateAccount">Create an account</a>
+    </div>
 </div>
-<br />
+<br/>
+
 <div class="col-6">
     <a class="btn btn-block btn-social btn-google" @onclick="GoogleSignIn">
         <i class="fa fa-google"></i> <b>Sign in with Google</b>
@@ -25,6 +33,17 @@
 </div>
 
 @code{
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationState;
+        var user = authState.User;
+        if(user.Identity.IsAuthenticated)
+            NavigationManager.NavigateTo("/profile", true);
+    }
+
     public async Task LoginUser()
     {
         await LoginViewModel.LoginUser();
@@ -34,5 +53,10 @@
     private void GoogleSignIn()
     {
         NavigationManager.NavigateTo("user/GoogleSignIn", true);
+    }
+
+    private void CreateAccount()
+    {
+        NavigationManager.NavigateTo("/createaccount", true);
     }
 }

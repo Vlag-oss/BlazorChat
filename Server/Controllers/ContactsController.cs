@@ -26,7 +26,6 @@ public class ContactsController : ControllerBase
     [HttpGet("getcontactscount")]
     public async Task<int> GetContactsCount()
     {
-        throw new IndexOutOfRangeException();
         return await _context.Users.CountAsync();
     }
         

@@ -19,6 +19,7 @@ builder.Services.AddHttpClient<ILoginViewModel, LoginViewModel>("BlazorChatClien
 builder.Services.AddHttpClient<IProfileViewModel, ProfileViewModel>("BlazorChatClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 builder.Services.AddHttpClient<ISettingsViewModel, SettingsViewModel>("BlazorChatClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 builder.Services.AddHttpClient<IContactsViewModel, ContactsViewModel>("BlazorChatClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+builder.Services.AddHttpClient<IRegisterViewModel, RegisterViewModel>("BlazorChatClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 

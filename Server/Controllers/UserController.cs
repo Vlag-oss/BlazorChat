@@ -82,11 +82,27 @@ public class UserController : ControllerBase
         await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme, GetAuthenticationProperties());
     }
 
+    [HttpPost("createaccount")]
+    public async Task<ActionResult> CreateAccount(User user)
+    {
+        var emailAddressExists = _context.Users.FirstOrDefault(u => u.EmailAddress == user.EmailAddress);
+
+        if (emailAddressExists == null)
+        {
+            user.Password = Utility.Encrypt(user.Password!);
+            user.Source = "APPL";
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+        }
+
+        return Ok();
+    }
+
     private static AuthenticationProperties GetAuthenticationProperties()
     {
         return new AuthenticationProperties
         {
-            IsPersistent = true,
             ExpiresUtc = DateTime.Now.AddMinutes(10),
             RedirectUri = "/profile"
         };

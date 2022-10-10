@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.0.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 16.0.0.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorChat.Server", "Server\BlazorChat.Server.csproj", "{E4A3BF13-CBD7-48F5-8622-668C3CFCFA1E}"
 EndProject
@@ -18,18 +18,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{00382C05-0A1B-4242-8423-4F6030CCB744}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{00382C05-0A1B-4242-8423-4F6030CCB744}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{00382C05-0A1B-4242-8423-4F6030CCB744}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{00382C05-0A1B-4242-8423-4F6030CCB744}.Debug|x64.Build.0 = Debug|Any CPU
-		{00382C05-0A1B-4242-8423-4F6030CCB744}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{00382C05-0A1B-4242-8423-4F6030CCB744}.Debug|x86.Build.0 = Debug|Any CPU
-		{00382C05-0A1B-4242-8423-4F6030CCB744}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{00382C05-0A1B-4242-8423-4F6030CCB744}.Release|Any CPU.Build.0 = Release|Any CPU
-		{00382C05-0A1B-4242-8423-4F6030CCB744}.Release|x64.ActiveCfg = Release|Any CPU
-		{00382C05-0A1B-4242-8423-4F6030CCB744}.Release|x64.Build.0 = Release|Any CPU
-		{00382C05-0A1B-4242-8423-4F6030CCB744}.Release|x86.ActiveCfg = Release|Any CPU
-		{00382C05-0A1B-4242-8423-4F6030CCB744}.Release|x86.Build.0 = Release|Any CPU
 		{E4A3BF13-CBD7-48F5-8622-668C3CFCFA1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E4A3BF13-CBD7-48F5-8622-668C3CFCFA1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4A3BF13-CBD7-48F5-8622-668C3CFCFA1E}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -42,6 +30,18 @@ Global
 		{E4A3BF13-CBD7-48F5-8622-668C3CFCFA1E}.Release|x64.Build.0 = Release|Any CPU
 		{E4A3BF13-CBD7-48F5-8622-668C3CFCFA1E}.Release|x86.ActiveCfg = Release|Any CPU
 		{E4A3BF13-CBD7-48F5-8622-668C3CFCFA1E}.Release|x86.Build.0 = Release|Any CPU
+		{00382C05-0A1B-4242-8423-4F6030CCB744}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00382C05-0A1B-4242-8423-4F6030CCB744}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00382C05-0A1B-4242-8423-4F6030CCB744}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{00382C05-0A1B-4242-8423-4F6030CCB744}.Debug|x64.Build.0 = Debug|Any CPU
+		{00382C05-0A1B-4242-8423-4F6030CCB744}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{00382C05-0A1B-4242-8423-4F6030CCB744}.Debug|x86.Build.0 = Debug|Any CPU
+		{00382C05-0A1B-4242-8423-4F6030CCB744}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00382C05-0A1B-4242-8423-4F6030CCB744}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00382C05-0A1B-4242-8423-4F6030CCB744}.Release|x64.ActiveCfg = Release|Any CPU
+		{00382C05-0A1B-4242-8423-4F6030CCB744}.Release|x64.Build.0 = Release|Any CPU
+		{00382C05-0A1B-4242-8423-4F6030CCB744}.Release|x86.ActiveCfg = Release|Any CPU
+		{00382C05-0A1B-4242-8423-4F6030CCB744}.Release|x86.Build.0 = Release|Any CPU
 		{94C2780B-91A2-4ABB-B473-C77C3FA13075}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{94C2780B-91A2-4ABB-B473-C77C3FA13075}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94C2780B-91A2-4ABB-B473-C77C3FA13075}.Debug|x64.ActiveCfg = Debug|Any CPU
