@@ -1,5 +1,4 @@
 using BlazorChat.Server.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,7 +6,7 @@ namespace BlazorChat.Server.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[Authorize]
+//[Authorize]
 public class SettingsController : ControllerBase
 {
     private readonly ILogger<SettingsController> _logger;
@@ -20,7 +19,7 @@ public class SettingsController : ControllerBase
     }
 
     [HttpPut("updatetheme/{userId}")]
-    public async Task<User> UpdateTheme(string userId, User user)
+    public async Task<User> UpdateTheme(string userId, [FromBody] User user)
     {
         var userToUpdate = await FindUser(Convert.ToInt32(userId));
         userToUpdate.DarkTheme = user.DarkTheme;
@@ -30,7 +29,7 @@ public class SettingsController : ControllerBase
     }
 
     [HttpPut("updatenotifications/{userId}")]
-    public async Task<User> UpdateNotifications(string userId, User user)
+    public async Task<User> UpdateNotifications(string userId, [FromBody] User user)
     {
         var userToUpdate = await FindUser(Convert.ToInt32(userId));
         userToUpdate.Notifications = user.Notifications;

@@ -3,21 +3,19 @@
 @using System.Security.Claims
 @inject ISettingsViewModel SettingsViewModel
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
 
-<h2><b>Settings</b></h2>
-<hr/>
+<h2 class="white-text"><b>Settings</b></h2> 
+<hr class="white-horizontal-line"/>
 
 <div class="col-12">
     <div class="row">
-        <RadzenSwitch @bind-value="@SettingsViewModel.Notifications" Style="margin-bottom: 20px;"/>
-        <label class="col-3"> Notification </label>
+        <RadzenSwitch @bind-value="@SettingsViewModel.Notifications" Style="margin-bottom: 20px;" Change="UpdateNotifications"/>
+        <label class="white-text col-3"> Notification </label>
     </div>
     <div class="row">
-        <RadzenSwitch @bind-value="@SettingsViewModel.DarkTheme" Style="margin-bottom: 20px;" />
-        <label class="col-3"> Dark Theme </label>
-    </div>
-    <div class="row">
-        <button class="btn btn-primary col-1" @onclick="SettingsViewModel.Save">Save</button>
+        <RadzenSwitch @bind-value="@SettingsViewModel.DarkTheme" Style="margin-bottom: 20px;" Change="UpdateTheme"/>
+        <label class="white-text col-3"> Dark Theme </label>
     </div>
 </div>
 
@@ -45,6 +43,28 @@
             {
                 NavigationManager.NavigateTo("/");
             }
+        }
+        catch (Exception e)
+        {
+            Error.ProcessError(e);
+        }
+    }
+
+    private async Task UpdateNotifications()
+    {
+        await SettingsViewModel.UpdateNotifications();
+    }
+
+    private async Task UpdateTheme()
+    {
+        try
+        {
+            var themeName = SettingsViewModel.DarkTheme ? "dark" : "light";
+
+            var module = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/site.js");
+            await module.InvokeVoidAsync("setTheme", themeName);
+
+            await SettingsViewModel.UpdateTheme();
         }
         catch (Exception e)
         {

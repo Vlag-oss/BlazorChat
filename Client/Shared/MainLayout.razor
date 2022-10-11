@@ -1,14 +1,9 @@
 ﻿@using Blazored.Toast.Configuration
+@using BlazorChat.Shared.Models
 @inherits LayoutComponentBase
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
-
-<BlazoredToasts Position="ToastPosition.BottomRight"
-                Timeout="10"
-                IconType="IconType.FontAwesome"
-                SuccessClass="success-toast-override"
-                SuccessIcon="fa fa-thumbs-up"
-                ErrorIcon="fa fa-bug"/>
+@inject IJSRuntime JsRuntime
 
 <div class="page">
     <div class="sidebar">
@@ -18,8 +13,15 @@
             </Authorized>
         </AuthorizeView>
     </div>
+    
+    <BlazoredToasts Position="ToastPosition.BottomRight"
+                    Timeout="3"
+                    IconType="IconType.FontAwesome"
+                    SuccessClass="success-toast-override"
+                    SuccessIcon="fa fa-thumbs-up"
+                    ErrorIcon="fa fa-bug"/>
 
-    <main>
+    <div class="main">
         <AuthorizeView>
             <Authorized>
                 <div class="top-row px-4">
@@ -31,18 +33,26 @@
         <article class="content px-4">
             @Body
         </article>
-    </main>
+    </div>
 </div>
 
 @code{
+
+    protected override async Task OnInitializedAsync()
+    {
+        var currentUser = await HttpClient.GetFromJsonAsync<User>("User/getcurrentuser");
+        if (currentUser != null)
+        {
+            var themeName = currentUser.DarkTheme == 1 ? "dark" : "light";
+
+            var module = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/site.js");
+            await module.InvokeVoidAsync("setTheme", themeName);
+        }
+    }
+
     private async Task LogoutUser()
     {
         await HttpClient.GetAsync("user/logoutuser");
-        NavigationManager.NavigateTo("/", true);
-    }
-
-    private void LoginUser()
-    {
         NavigationManager.NavigateTo("/", true);
     }
 }
