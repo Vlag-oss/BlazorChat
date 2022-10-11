@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using BlazorChat.Shared.Models;
+using Blazored.Toast.Services;
 
 namespace BlazorChat.Client.ViewModels;
 
@@ -10,33 +11,33 @@ public class ProfileViewModel : IProfileViewModel
     public string? LastName { get; set; }
     public string EmailAddress { get; set; } = string.Empty;
     public string? AboutMe { get; set; }
-    public string? Message { get; set; }
     public string? ProfilePicDataUrl { get; set; }
 
     private readonly HttpClient _httpClient;
+    private readonly IToastService _toastService;
 
     public ProfileViewModel()
     {
         
     }
 
-    public ProfileViewModel(HttpClient httpClient)
+    public ProfileViewModel(HttpClient httpClient, IToastService toastService)
     {
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+        _toastService = toastService;
     }
 
     public async Task UpdateProfile()
     {
         User user = this;
         await _httpClient.PutAsJsonAsync<User>($"profile/updateprofile/{UserId}", user);
-        Message = "Profile updated successfully";
+        _toastService.ShowSuccess("Profile info has been saved successfully");
     }
 
     public async Task GetProfile()
     {
         var user = await _httpClient.GetFromJsonAsync<User>($"profile/getprofile/{UserId}") ?? new User();
         LoadCurrentObject(user);
-        Message = "Profile loaded successfully";
     }
 
     private void LoadCurrentObject(ProfileViewModel profileViewModel)

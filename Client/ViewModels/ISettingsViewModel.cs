@@ -6,6 +6,7 @@ public interface ISettingsViewModel
     public bool Notifications { get; set; }
     public bool DarkTheme { get; set; }
 
+    public Task UpdateTheme();
+    public Task UpdateNotifications();
     public Task GetProfile();
-    public Task Save();
 }

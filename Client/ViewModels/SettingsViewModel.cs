@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using BlazorChat.Shared.Models;
+using Blazored.Toast.Services;
 
 namespace BlazorChat.Client.ViewModels;
 
@@ -10,15 +11,17 @@ public class SettingsViewModel : ISettingsViewModel
     public bool DarkTheme { get; set; }
 
     private readonly HttpClient _httpClient;
+    private readonly IToastService _toastService;
 
     public SettingsViewModel()
     {
         
     }
 
-    public SettingsViewModel(HttpClient httpClient)
+    public SettingsViewModel(HttpClient httpClient, IToastService toastService)
     {
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+        _toastService = toastService;
     }
 
     public async Task GetProfile()
@@ -27,11 +30,18 @@ public class SettingsViewModel : ISettingsViewModel
         LoadCurrentObject(user);
     }
 
-    public async Task Save()
+    public async Task UpdateTheme()
     {
-        var user = this;
-        await _httpClient.PutAsJsonAsync<User>($"settings/updatetheme/{this.UserId}", user);
-        await _httpClient.PutAsJsonAsync<User>($"settings/updatenotifications/{this.UserId}", user);
+        User user = this;
+        await _httpClient.PutAsJsonAsync($"settings/updatetheme/{this.UserId}", user);
+        _toastService.ShowSuccess("Settings have been saved successfully");
+    }
+
+    public async Task UpdateNotifications()
+    {
+        User user = this;
+        await _httpClient.PutAsJsonAsync($"settings/updatenotifications/{this.UserId}", user);
+        _toastService.ShowSuccess("Settings have been saved successfully");
     }
 
     private void LoadCurrentObject(SettingsViewModel settingsViewModel)
@@ -45,7 +55,7 @@ public class SettingsViewModel : ISettingsViewModel
         return new SettingsViewModel
         {
             Notifications = user.Notifications is not (null or 0),
-            DarkTheme = user.DarkTheme is not (null or 0)
+            DarkTheme = (user.DarkTheme == null || (long)user.DarkTheme == 0) ? false : true
         };
     }
 
