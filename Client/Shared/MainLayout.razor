@@ -1,9 +1,11 @@
 ﻿@using Blazored.Toast.Configuration
 @using BlazorChat.Shared.Models
+@using Blazored.LocalStorage
 @inherits LayoutComponentBase
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JsRuntime
+@inject ILocalStorageService LocalStorageService
 
 <div class="page">
     <div class="sidebar">
@@ -41,18 +43,19 @@
     protected override async Task OnInitializedAsync()
     {
         var currentUser = await HttpClient.GetFromJsonAsync<User>("User/getcurrentuser");
-        if (currentUser != null)
+        if (currentUser != null && currentUser.UserId != 0)
         {
             var themeName = currentUser.DarkTheme == 1 ? "dark" : "light";
 
             var module = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/site.js");
             await module.InvokeVoidAsync("setTheme", themeName);
         }
+        await base.OnInitializedAsync();
     }
 
     private async Task LogoutUser()
     {
-        await HttpClient.GetAsync("user/logoutuser");
+        await LocalStorageService.RemoveItemAsync("jwt_token");
         NavigationManager.NavigateTo("/", true);
     }
 }

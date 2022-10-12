@@ -4,30 +4,30 @@
 @inject IRegisterViewModel RegisterViewModel
 @inject NavigationManager NavigationManager
 
-<h2><b>Create an account</b></h2>
-<hr>
+<h2 class="white-text"><b>Create an account</b></h2>
+<hr class="white-horizontal-line">
 
 <div class="row">
     <EditForm Model="@RegisterViewModel" OnValidSubmit="@RegisterUser">
         <DataAnnotationsValidator/>
         <div class="col-3 mb-3">
             <label for="emailAddress" class="form-label">Email Address <span class="required-field">*</span></label>
-            <InputText id="emailAddress" class="form-control" type="email" @bind-Value="RegisterViewModel.EmailAddress"/>
+            <InputText id="emailAddress" class="form-control dark-theme-textbox" type="email" @bind-Value="RegisterViewModel.EmailAddress"/>
             <ValidationMessage For="() => RegisterViewModel.EmailAddress" />
         </div>
         <div class="col-3 mb-3">
             <label for="password" class="form-label">Password <span class="required-field">*</span></label>
-            <InputText id="password" class="form-control" type="password" @bind-Value="RegisterViewModel.Password"/>
+            <InputText id="password" class="form-control dark-theme-textbox" type="password" @bind-Value="RegisterViewModel.Password"/>
             <ValidationMessage For="() => RegisterViewModel.Password" />
         </div>
         <div class="col-3 mb-3">
             <label for="firstName" class="form-label">First name <span class="required-field">*</span></label>
-            <InputText id="firstName" class="form-control" type="text" @bind-Value="RegisterViewModel.FirstName"/>
+            <InputText id="firstName" class="form-control dark-theme-textbox" type="text" @bind-Value="RegisterViewModel.FirstName"/>
             <ValidationMessage For="() => RegisterViewModel.FirstName" />
         </div>
         <div class="col-3 mb-3">
             <label for="lastName" class="form-label">Last name <span class="required-field">*</span></label>
-            <InputText id="lastName" class="form-control" type="text" @bind-Value="RegisterViewModel.LastName"/>
+            <InputText id="lastName" class="form-control dark-theme-textbox" type="text" @bind-Value="RegisterViewModel.LastName"/>
             <ValidationMessage For="() => RegisterViewModel.LastName" />
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>

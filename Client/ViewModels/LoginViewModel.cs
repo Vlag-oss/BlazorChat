@@ -25,6 +25,12 @@ public class LoginViewModel : ILoginViewModel
         await _httpClient.PostAsJsonAsync<User>("user/loginuser", this);
     }
 
+    public async Task<AuthenticationResponse> AuthenticationJWT()
+    {
+        var httpResponseMessage = await _httpClient.PostAsJsonAsync("user/authenticatejwt", new AuthenticationRequest{  EmailAddress = this.EmailAddress, Password = this.Password});
+        return await httpResponseMessage.Content.ReadFromJsonAsync<AuthenticationResponse>();
+    }
+
     public static implicit operator LoginViewModel(User user)
     {
         return new LoginViewModel

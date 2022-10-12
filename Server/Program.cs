@@ -1,8 +1,10 @@
 using BlazorChat.Server.Hubs;
 using BlazorChat.Server.Logging;
 using BlazorChat.Server.Models;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,11 +20,21 @@ builder.Services.AddResponseCompression(opts =>
 builder.Services.AddEntityFrameworkSqlite().AddDbContext<BlazorChatContext>();
 
 builder.Services.AddAuthentication(options => {
-    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-.AddCookie(options =>
+.AddJwtBearer(jwtBearerOptions =>
 {
-    options.LoginPath = "/user/notauthorized";
+    jwtBearerOptions.RequireHttpsMetadata = true;
+    jwtBearerOptions.SaveToken = true;
+    jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["JWTSettings:SecretKey"])),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ClockSkew = TimeSpan.Zero
+    };
 })
 .AddGoogle(googleOptions => {
     googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];

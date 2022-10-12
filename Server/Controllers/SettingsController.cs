@@ -1,4 +1,5 @@
 using BlazorChat.Server.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,7 +7,7 @@ namespace BlazorChat.Server.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-//[Authorize]
+[Authorize]
 public class SettingsController : ControllerBase
 {
     private readonly ILogger<SettingsController> _logger;
