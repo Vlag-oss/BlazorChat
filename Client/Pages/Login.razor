@@ -2,11 +2,12 @@
 @using BlazorChat.Client.ViewModels
 @inject ILoginViewModel LoginViewModel
 @inject NavigationManager NavigationManager
+@inject ILocalStorageService LocalStorageService
+@inject IToastService ToastService
 
 <h2 class="white-text"><b>Login</b></h2>
 <hr class="white-horizontal-line">
     
-
 <div class="col-6">
     <input type="text" @bind-value="LoginViewModel.EmailAddress" class="form-control dark-theme-textbox" placeholder="email address">
 </div>
@@ -18,7 +19,7 @@
 
 <div class="col-xl-6 col-md-8 col-12 row">
     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-3 col-3">
-        <button class="btn btn-primary" @onclick="LoginUser">Login</button>
+        <button class="btn btn-primary" @onclick="AuthenticationJWT">Login</button>
     </div>
     <div class="col-xl-5 col-lg-5 col-md-6 col-sm-9 col-9">
         <a class="btn-link" @onclick="CreateAccount">Create an account</a>
@@ -48,6 +49,20 @@
     {
         await LoginViewModel.LoginUser();
         NavigationManager.NavigateTo("/profile", true);
+    }
+
+    public async Task AuthenticationJWT()
+    {
+        var authenticationResponse = await LoginViewModel.AuthenticationJWT();
+        if (authenticationResponse.Token != string.Empty)
+        {
+            await LocalStorageService.SetItemAsync("jwt_token", authenticationResponse.Token);
+            NavigationManager.NavigateTo("/profile", true);
+        }
+        else
+        {
+            ToastService.ShowError("Invalid username or password");
+        }
     }
 
     private void GoogleSignIn()
